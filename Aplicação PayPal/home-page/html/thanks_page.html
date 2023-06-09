@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Obrigado por sua compra!</title>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="../css/thanks.css" media="screen">
+</head>
+<body>
+  <div class="container">
+    <img id="success-gif" src="../assets/success.gif" alt="Success GIF" loop="false">
+    <h1 id="thank-you-message">Obrigado por sua compra!</h1>
+  
+    <p id="transaction-id"></p>
+  
+    <p>Obrigado por escolher nossa loja. Se você tiver alguma dúvida ou precisar de assistência adicional, entre em contato conosco.</p>
+  </div>
+
+  <script>
+    // Obtém o parâmetro da URL com o ID da transação
+    const urlParams = new URLSearchParams(window.location.search);
+    const transactionId = urlParams.get('transaction_id');
+
+    // Atualiza o conteúdo dos elementos HTML com os dados da transação
+    document.getElementById('transaction-id').textContent = 'Número da transação: ' + transactionId;
+  </script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/web-store.css" media="screen">
+
+    <title>Semedo Store</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=ARIWROqud2qJ68l9lBZCINUF78MOYn50yNsfNrEYMCw_wmhWDW7macbbiZGCx-2R7c4Cel9OQ1J5n3vE&currency=USD"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=ARIWROqud2qJ68l9lBZCINUF78MOYn50yNsfNrEYMCw_wmhWDW7macbbiZGCx-2R7c4Cel9OQ1J5n3vE&components=buttons"></script>
+
+    <script>
+        // Função para inicializar a API do PayPal
+        function initPayPal() {
+            paypal.Buttons({
+                createOrder: function(data, actions) {
+                    var buyerData = getBuyerData();
+                    return actions.order.create({
+                            purchase_units: [{
+                                amount: {
+                                    value: "1200.00"
+                                }
+                            }],
+                            payer: {
+                                email_address: buyerData.email,
+                                name: {
+                                    given_name: buyerData.nome,
+                                    surname: buyerData.sobrenome
+                                },
+                                phone: {
+                                    phone_type: "FAX",
+                                    phone_number: {
+                                        national_number: buyerData.telefone
+                                    }
+                                },
+                                address: {
+                                    address_line_1: buyerData.address.rua,
+                                    address_line_2: "",
+                                    admin_area_2: "",
+                                    admin_area_1: buyerData.address.estado,
+                                    postal_code: buyerData.address.cep,
+                                    country_code: buyerData.address.pais
+                                }
+                            }
+                        })
+                        .then((response) => response)
+                        .then((order) => order);
+                },
+                onApprove: function(data, actions) {
+                    return actions.order.capture().then(function(details) {
+                        window.location.href = 'thanks_page.html?transaction_id=' + details.id;
+                    });
+                },
+            }).render('#paypal-button-container');
+        }
+    </script>
+</head>
+
+<body class="bg-light">
+
+    <div class="container mt-5">
+        <h1 class="text-center" id="titulo">SEMEDO STORE</h1>
+        <h2 class="text-center">Carrinho de Compras</h2>
+    </div>
+
+    <div class="container">
+        <p class="subtitulo text-center">Informações do Comprador</p>
+        <br>
+        <form id="buyer-info-form">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="nome"><strong>Primeiro Nome</strong></label>
+                    <input type="text" class="form-control" name="nome" id="nome" required value="John">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="sobrenome"><strong>Último Nome</strong></label>
+                    <input type="text" class="form-control" name="sobrenome" id="sobrenome" required value="Doe">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="email"><strong>Email</strong></label>
+                    <input type="email" class="form-control" name="email" id="email" required value="sb-xur47q26257550@personal.example.com">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="telefone"><strong>Telefone</strong></label>
+                    <input type="text" class="form-control" name="telefone" id="telefone" required value="4089332513">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="pais"><strong>País</strong></label>
+                    <input type="text" class="form-control" name="pais" id="pais" required value="US">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="estado"><strong>Estado</strong></label>
+                    <input type="text" class="form-control" name="estado" id="estado" required value="CA">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="cep"><strong>CEP</strong></label>
+                    <input type="text" class="form-control" name="cep" id="cep" required value="95131">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="rua"><strong>Rua</strong></label>
+                    <input type="text" class="form-control" name="rua" id="rua" required value="1 Main St">
+                </div>
+            </div>
+
+            <p class="subtitulo">Produto</p>
+
+            <p>
+                Nome do produto: Monitor Gamer Samsung Odyssey G9<br>
+                Número do item: 327164<br>
+                Preço: $1200.00
+            </p>
+            <img src="../assets/monitor-removebg-preview.png" alt="Monitor Gamer" class="img-fluid">
+        </form>
+
+        <div id="paypal-button-container" class="text-center"></div>
+    </div>
+
+    <script>
+        // Função para obter os dados do comprador e iniciar a API do PayPal
+        function getBuyerData() {
+            var nome = $('#nome').val();
+            var sobrenome = $('#sobrenome').val();
+            var email = $('#email').val();
+            var telefone = $('#telefone').val();
+            var pais = $('#pais').val();
+            var estado = $('#estado').val();
+            var cep = $('#cep').val();
+            var rua = $('#rua').val();
+            return {
+                nome: nome,
+                sobrenome: sobrenome,
+                email: email,
+                telefone: telefone,
+                address: {
+                    pais: pais,
+                    estado: estado,
+                    cep: cep,
+                    rua: rua
+                }
+            };
+        }
+
+        // Aguardar o carregamento da página
+        $(document).ready(function() {
+            // Inicializar a API do PayPal após o carregamento da página
+            initPayPal();
+        });
+
+        // Aguardar o carregamento da página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Manipular o envio do formulário
+            document.getElementById('paypal-button-container').addEventListener('click', function(event) {
+                event.preventDefault();
+                var buyerData = getBuyerData();
+                initPayPal(buyerData);
+            });
+        });
+    </script>
+</body>
+
+</html>
