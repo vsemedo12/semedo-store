@@ -1,0 +1,1 @@
+# semedo-store
